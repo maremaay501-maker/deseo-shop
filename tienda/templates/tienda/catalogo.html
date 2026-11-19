@@ -1,0 +1,31 @@
+{% extends "tienda/base.html" %}
+{% block titulo %}{% if user.is_staff %}Productos{% else %}Colección{% endif %}{% endblock %}
+
+{% block contenido %}
+<main class="pagina">
+  <div class="titulo-script">
+    <h1 style="font-size:2.6rem;margin:0">{% if user.is_staff %}Productos{% else %}Colección{% endif %}</h1>
+    <span class="script">{% if user.is_staff %}CRUD{% else %}completa{% endif %}</span>
+  </div>
+
+  <form class="barra" method="get">
+    <input type="search" name="q" value="{{ q }}" placeholder="Buscar prenda...">
+    <select name="cat">
+      <option value="">Todas las categorías</option>
+      {% for clave, nombre in categorias %}
+        <option value="{{ clave }}" {% if clave == cat %}selected{% endif %}>{{ nombre }}</option>
+      {% endfor %}
+    </select>
+    <button class="boton chico" type="submit">Filtrar</button>
+    {% if user.is_staff %}<a class="boton chico vino" href="{% url 'producto_crear' %}">+ Nuevo producto</a>{% endif %}
+  </form>
+
+  <div class="rejilla">
+    {% for p in productos %}
+      {% include "tienda/_tarjeta.html" %}
+    {% empty %}
+      <p>No se encontraron productos.</p>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}

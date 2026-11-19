@@ -1,0 +1,14 @@
+{% extends "tienda/base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+
+{% block contenido %}
+<main class="pagina">
+  <h1>{{ titulo }}</h1>
+  <form class="formulario" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="boton" type="submit">Guardar</button>
+    <a class="boton claro" href="{% url 'catalogo' %}">Cancelar</a>
+  </form>
+</main>
+{% endblock %}

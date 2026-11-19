@@ -1,0 +1,71 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}{{ MARCA }}{% endblock %} · {{ MARCA }}</title>
+  <link rel="icon" href="{% static 'tienda/img/logo.svg' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Pinyon+Script&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'tienda/css/estilo.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% block clase_body %}{% endblock %}">
+{% with url=request.resolver_match.url_name %}
+<header class="nav">
+  <a class="marca" href="{% url 'inicio' %}">
+    <img src="{% static 'tienda/img/logo.svg' %}" alt="Logotipo {{ MARCA }}">
+    <span>{{ MARCA }}</span>
+  </a>
+  <nav class="menu">
+    {% if user.is_staff %}
+      <a href="{% url 'panel' %}" class="{% if url == 'panel' %}activo{% endif %}">Métricas</a>
+      <a href="{% url 'catalogo' %}" class="{% if url == 'catalogo' %}activo{% endif %}">Productos</a>
+    {% else %}
+      <a href="{% url 'inicio' %}" class="{% if url == 'inicio' %}activo{% endif %}">Inicio</a>
+      <a href="{% url 'catalogo' %}" class="{% if url == 'catalogo' %}activo{% endif %}">Colección</a>
+    {% endif %}
+    <a href="{% url 'mapa' %}" class="{% if url == 'mapa' %}activo{% endif %}">Ubicación</a>
+    <a href="{% url 'chat' %}" class="{% if url == 'chat' %}activo{% endif %}">Blog</a>
+    <a href="{% url 'videos' %}" class="{% if url == 'videos' %}activo{% endif %}">Videos</a>
+    {% if not user.is_staff %}<a href="{% url 'encuesta' %}" class="{% if url == 'encuesta' %}activo{% endif %}">Encuesta</a>{% endif %}
+    <a href="{% url 'camara' %}" class="{% if url == 'camara' %}activo{% endif %}">Fotos</a>
+    <a href="{% url 'identidad' %}" class="{% if url == 'identidad' %}activo{% endif %}">Identidad</a>
+  </nav>
+  <div class="iconos">
+    {% if not user.is_staff %}
+    <a href="{% url 'encuesta' %}" title="Encuesta">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21.2l8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
+    </a>
+    {% endif %}
+    <span class="rol" title="{{ user.username }}">{% if user.is_staff %}Admin{% else %}{{ user.first_name|default:user.username }}{% endif %}</span>
+    <a href="{% url 'mis_compras' %}" title="Mis compras">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l-1.5 12h-11z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+    </a>
+    <form method="post" action="{% url 'logout' %}" style="margin:0">
+      {% csrf_token %}
+      <button type="submit" title="Cerrar sesión">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l-5-5 5-5M5 12h12"/></svg>
+        Salir
+      </button>
+    </form>
+  </div>
+</header>
+{% endwith %}
+
+{% if messages %}
+<div class="mensajes" id="mensajes">
+  {% for m in messages %}<div class="mensaje {{ m.tags }}">{{ m }}</div>{% endfor %}
+</div>
+<script>setTimeout(() => document.getElementById('mensajes')?.remove(), 5000);</script>
+{% endif %}
+
+{% block contenido %}{% endblock %}
+
+<footer class="pie-sitio">
+  <span class="script">{{ SLOGAN }}</span>
+  © {% now "Y" %} {{ TIENDA_NOMBRE }} · Sitio exclusivo para mayores de 18 años
+</footer>
+{% block scripts %}{% endblock %}
+</body>
+</html>

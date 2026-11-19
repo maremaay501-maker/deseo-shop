@@ -1,0 +1,59 @@
+{% extends "tienda/base.html" %}
+{% block titulo %}Chat{% endblock %}
+
+{% block contenido %}
+<main class="pagina">
+  <h1>Blog / Chat</h1>
+  <p class="sub">Pregunta por tallas, recomienda tu prenda favorita o comparte tu experiencia con la comunidad Deseo.</p>
+
+  <div class="chat-caja" id="caja"></div>
+  <form class="chat-form" id="formChat">
+    <input type="text" id="texto" maxlength="300" placeholder="Escribe un mensaje..." autocomplete="off" required>
+    <button class="boton" type="submit">Enviar</button>
+  </form>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const caja = document.getElementById('caja');
+  const csrf = "{{ csrf_token }}";
+  let ultimoId = 0;
+
+  function pintar(m) {
+    const d = document.createElement('div');
+    d.className = 'burbuja' + (m.propio ? ' propio' : '');
+    const q = document.createElement('div');
+    q.className = 'quien';
+    q.textContent = m.usuario + (m.admin ? ' (admin)' : '');
+    const h = document.createElement('span');
+    h.className = 'hora'; h.textContent = m.hora;
+    q.appendChild(h);
+    const t = document.createElement('div');
+    t.textContent = m.texto;   // textContent evita inyectar HTML
+    d.append(q, t);
+    caja.appendChild(d);
+  }
+
+  async function cargar() {
+    const r = await fetch("{% url 'chat_mensajes' %}?despues=" + ultimoId);
+    const datos = await r.json();
+    if (datos.mensajes.length) {
+      datos.mensajes.forEach(m => { pintar(m); ultimoId = Math.max(ultimoId, m.id); });
+      caja.scrollTop = caja.scrollHeight;
+    }
+  }
+
+  document.getElementById('formChat').addEventListener('submit', async e => {
+    e.preventDefault();
+    const campo = document.getElementById('texto');
+    const cuerpo = new URLSearchParams({ texto: campo.value });
+    campo.value = '';
+    await fetch("{% url 'chat_enviar' %}", { method: 'POST', headers: { 'X-CSRFToken': csrf }, body: cuerpo });
+    cargar();
+  });
+
+  cargar();
+  setInterval(cargar, 3000);
+</script>
+{% endblock %}

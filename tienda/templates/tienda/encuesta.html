@@ -1,0 +1,14 @@
+{% extends "tienda/base.html" %}
+{% block titulo %}Encuesta{% endblock %}
+
+{% block contenido %}
+<main class="pagina">
+  <h1>Encuesta de satisfacción</h1>
+  <p class="sub">Tarda menos de un minuto. 1 = nada satisfecho, 5 = muy satisfecho.</p>
+  <form class="formulario" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="boton" type="submit">Enviar respuestas</button>
+  </form>
+</main>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% load static %}
+<article class="tarjeta" data-cat="{{ p.categoria }}">
+  <div class="foto">
+    {% if p.imagen %}<img src="{{ p.imagen.url }}" alt="{{ p.nombre }}" loading="lazy">
+    {% else %}<img src="{% static 'tienda/img/logo.svg' %}" alt="{{ p.nombre }}" style="width:40%">{% endif %}
+  </div>
+  <div class="info">
+    <span class="etiqueta">{{ p.get_categoria_display }}</span>
+    <h3>{{ p.nombre }}</h3>
+    <p class="desc">{{ p.descripcion }}</p>
+    <div class="pie">
+      <span class="precio">${{ p.precio|floatformat:0 }}</span>
+      {% if user.is_staff %}
+        <span class="stock {% if p.stock <= 5 %}bajo{% endif %}">{{ p.stock }} pzas</span>
+      {% else %}
+        <form method="post" action="{% url 'comprar' p.pk %}" style="margin:0">
+          {% csrf_token %}<input type="hidden" name="siguiente" value="{{ request.get_full_path }}">
+          <button class="comprar" type="submit" {% if p.stock == 0 %}disabled{% endif %}>{% if p.stock == 0 %}agotado{% else %}comprar{% endif %}</button>
+        </form>
+      {% endif %}
+    </div>
+    {% if user.is_staff %}
+      <div class="acciones">
+        <a class="boton chico claro" href="{% url 'producto_editar' p.pk %}">Editar</a>
+        <a class="boton chico peligro" href="{% url 'producto_eliminar' p.pk %}">Eliminar</a>
+      </div>
+    {% elif p.stock and p.stock <= 5 %}
+      <span class="stock bajo">¡Últimas {{ p.stock }}!</span>
+    {% endif %}
+  </div>
+</article>

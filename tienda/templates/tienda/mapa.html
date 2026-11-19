@@ -1,0 +1,60 @@
+{% extends "tienda/base.html" %}
+{% block titulo %}Mapa{% endblock %}
+{% block head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">{% endblock %}
+
+{% block contenido %}
+<main class="pagina">
+  <h1>¿Qué tan cerca estás?</h1>
+  <p class="sub">Captura tu ubicación y calcula la distancia a {{ TIENDA_NOMBRE }} (punto de entrega en la UPVM, envíos discretos).</p>
+
+  <div class="barra">
+    <button class="boton" id="btnUbicar" type="button">📍 Capturar mi ubicación</button>
+    <span>Distancia a la tienda: <span class="distancia" id="distancia">—</span></span>
+  </div>
+  <p id="estado" class="sub"></p>
+  {% if ultima %}<p class="sub">Tu última ubicación guardada: {{ ultima.distancia_km }} km ({{ ultima.fecha|date:"d/m/Y H:i" }}).</p>{% endif %}
+
+  <div id="mapa"></div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const TIENDA = JSON.parse('[{{ TIENDA_LAT|stringformat:"f" }}, {{ TIENDA_LNG|stringformat:"f" }}]');
+  const csrf = "{{ csrf_token }}";
+  const mapa = L.map('mapa').setView(TIENDA, 13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19, attribution: '&copy; OpenStreetMap'
+  }).addTo(mapa);
+  L.marker(TIENDA).addTo(mapa).bindPopup("<b>{{ TIENDA_NOMBRE }}</b>").openPopup();
+
+  function haversine(a, b) {
+    const R = 6371, rad = x => x * Math.PI / 180;
+    const dLat = rad(b[0] - a[0]), dLng = rad(b[1] - a[1]);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a[0])) * Math.cos(rad(b[0])) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+
+  document.getElementById('btnUbicar').addEventListener('click', () => {
+    const estado = document.getElementById('estado');
+    if (!navigator.geolocation) { estado.textContent = 'Tu navegador no soporta geolocalización.'; return; }
+    estado.textContent = 'Buscando tu ubicación...';
+    navigator.geolocation.getCurrentPosition(async pos => {
+      const yo = [pos.coords.latitude, pos.coords.longitude];
+      const km = haversine(yo, TIENDA);
+      L.marker(yo).addTo(mapa).bindPopup('Tú estás aquí').openPopup();
+      L.polyline([yo, TIENDA], { color: '#7a1f2e', weight: 4, dashArray: '8 8' }).addTo(mapa);
+      mapa.fitBounds([yo, TIENDA], { padding: [50, 50] });
+      document.getElementById('distancia').textContent = km.toFixed(2) + ' km';
+      estado.textContent = 'Ubicación capturada y guardada.';
+      await fetch("{% url 'guardar_ubicacion' %}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrf },
+        body: JSON.stringify({ lat: yo[0], lng: yo[1], distancia_km: km })
+      });
+    }, err => { estado.textContent = 'No se pudo obtener tu ubicación: ' + err.message; },
+    { enableHighAccuracy: true, timeout: 15000 });
+  });
+</script>
+{% endblock %}

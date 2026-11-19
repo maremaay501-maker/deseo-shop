@@ -1,0 +1,256 @@
+/* ===== Identidad DESEO — Sexy Shop =====
+   Basado en el diseño de referencia (hero beige, tarjetas arena, botones píldora,
+   sección rosa de "nuevo"), adaptado a una tienda de lencería.
+   Paleta: crema, arena, rosa empolvado, caramelo, vino, noche
+   Tipografías: Archivo Black (títulos), Pinyon Script (acentos), Poppins (texto) */
+:root {
+  --crema: #faf5ef;
+  --arena: #e9ddcf;
+  --arena-2: #d9c7b2;
+  --rosa: #f6c6c6;
+  --caramelo: #b97a64;
+  --vino: #4e0f1d;
+  --vino-2: #7a1f2e;
+  --noche: #1d1013;
+  --texto: #4a3a36;
+  --blanco: #ffffff;
+  --titulo: "Archivo Black", "Arial Black", sans-serif;
+  --script: "Pinyon Script", "Brush Script MT", cursive;
+  --cuerpo: "Poppins", "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--cuerpo); color: var(--texto); background: var(--blanco); line-height: 1.55; }
+img { max-width: 100%; display: block; }
+a { color: var(--vino-2); text-decoration: none; }
+h1, h2, h3 { font-family: var(--titulo); font-weight: 400; margin: 0 0 .5em; color: var(--vino); line-height: 1.05; }
+.script { font-family: var(--script); font-weight: 400; color: var(--caramelo); }
+
+/* ----- navegación ----- */
+.nav {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: .9rem 2.2rem; background: var(--vino); position: sticky; top: 0; z-index: 50;
+}
+.con-hero .nav { position: absolute; left: 0; right: 0; background: transparent; }
+.marca { display: flex; align-items: center; gap: .55rem; color: #fff; font: 700 1.35rem var(--cuerpo); letter-spacing: .02em; }
+.marca img { width: 34px; height: 34px; }
+.menu { display: flex; gap: .15rem; flex-wrap: wrap; align-items: center; justify-content: center; }
+.menu a { color: #fff; font-size: .85rem; padding: .35rem .7rem; border-radius: 99px; transition: .2s; }
+.menu a:hover { background: rgba(255,255,255,.15); }
+.menu a.activo { background: var(--caramelo); }
+.iconos { display: flex; align-items: center; gap: .9rem; }
+.iconos a, .iconos button { color: #fff; background: none; border: 0; cursor: pointer; display: flex; align-items: center; gap: .3rem; font: 600 .7rem var(--cuerpo); padding: 0; }
+.iconos svg { width: 20px; height: 20px; }
+.rol { font-size: .62rem; background: var(--rosa); color: var(--vino); padding: .15rem .55rem; border-radius: 99px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+
+/* ----- mensajes (toast) ----- */
+.mensajes { position: fixed; top: 80px; right: 20px; z-index: 100; display: grid; gap: .5rem; max-width: 360px; }
+.mensaje { padding: .8rem 1rem; border-radius: 10px; background: #fff; border-left: 5px solid var(--caramelo); box-shadow: 0 10px 30px rgba(0,0,0,.15); font-size: .9rem; animation: entra .3s ease; }
+.mensaje.error { border-color: var(--vino-2); }
+.mensaje.success { border-color: #3f7d4f; }
+@keyframes entra { from { opacity: 0; transform: translateY(-8px); } }
+
+/* ----- botones (píldoras del diseño) ----- */
+.boton {
+  display: inline-block; background: var(--caramelo); color: #fff; border: 0; cursor: pointer;
+  font: 600 .9rem var(--cuerpo); padding: .55rem 1.4rem; border-radius: 8px; transition: .2s; text-align: center;
+}
+.boton:hover { background: var(--vino-2); transform: translateY(-1px); }
+.boton.claro { background: transparent; color: var(--caramelo); border: 2px solid var(--caramelo); }
+.boton.claro:hover { background: var(--caramelo); color: #fff; }
+.boton.chico { padding: .35rem .9rem; font-size: .75rem; }
+.boton.peligro { background: var(--vino-2); }
+.boton.vino { background: var(--vino); }
+.boton:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* ----- HERO (como "ORDER COFFEE") ----- */
+.hero {
+  position: relative; overflow: hidden; height: 600px;
+  background:
+    linear-gradient(118deg, transparent 0 46%, rgba(60,35,20,.20) 46% 100%),
+    radial-gradient(circle at 30% 30%, #e3d3c0 0%, #cdb79f 60%, #bfa78d 100%);
+}
+.hero::before { /* textura de pared */
+  content: ""; position: absolute; inset: 0; opacity: .35;
+  background-image: radial-gradient(rgba(90,60,40,.25) 1px, transparent 1px);
+  background-size: 5px 5px;
+}
+.hero .pedestal {
+  position: absolute; left: 50%; bottom: -10px; transform: translateX(-50%);
+  width: 400px; height: 110px; border-radius: 4px;
+  background: linear-gradient(180deg, #ddd2c4, #bfb1a0); box-shadow: 0 -2px 0 #efe7dc inset, 0 20px 40px rgba(0,0,0,.25);
+}
+.hero .producto-hero {
+  position: absolute; left: 50%; bottom: 95px; transform: translateX(-50%);
+  height: 430px; mix-blend-mode: multiply; z-index: 2;
+}
+.hero h1 {
+  position: absolute; top: 47%; left: 0; right: 0; margin: 0; z-index: 3;
+  display: flex; justify-content: space-between; padding: 0 9%;
+  font-size: clamp(3rem, 9vw, 7.2rem); color: #fff; letter-spacing: .01em; pointer-events: none;
+}
+.hero h1 span { text-shadow: 0 4px 30px rgba(60,30,20,.25); }
+.hero .bienvenida { position: absolute; z-index: 3; right: 9%; top: calc(47% + clamp(3rem, 9vw, 7.2rem) - .5rem); font-size: clamp(2rem, 4vw, 3.4rem); color: #fff; }
+.hero .slogan-hero { position: absolute; z-index: 3; left: 9%; bottom: 40px; color: #fff; font-weight: 600; max-width: 26ch; text-shadow: 0 2px 12px rgba(0,0,0,.25); }
+.edad { display: inline-block; background: var(--vino); color: #fff; font-weight: 700; font-size: .7rem; padding: .1rem .5rem; border-radius: 99px; margin-left: .3rem; }
+
+/* ----- MENÚ / colección ----- */
+.seccion { padding: 4rem 2rem; }
+.contenedor { max-width: 1000px; margin: 0 auto; }
+.encabezado { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2.2rem; }
+.titulo-script h2 { font-size: 2.6rem; margin: 0; }
+.titulo-script .script { display: block; font-size: 2rem; margin: -.6rem 0 0 2.2rem; line-height: 1; }
+.pildoras { display: flex; gap: .7rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2.5rem; }
+.pildora { background: var(--caramelo); color: #fff; border: 0; border-radius: 99px; padding: .45rem 1.3rem; font: 600 .85rem var(--cuerpo); cursor: pointer; transition: .2s; }
+.pildora:hover, .pildora.activa { background: var(--vino); }
+
+.carrusel { display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; gap: .5rem; margin-bottom: 2.5rem; }
+.flecha { background: none; border: 0; cursor: pointer; color: var(--caramelo); font-size: 2.2rem; line-height: 1; padding: 0; }
+.flecha:hover { color: var(--vino); }
+.fila { display: flex; gap: 1.4rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: .3rem; scrollbar-width: none; }
+.fila::-webkit-scrollbar { display: none; }
+
+/* tarjeta de producto (como las tarjetas de café) */
+.tarjeta { flex: 0 0 calc(25% - 1.05rem); min-width: 190px; scroll-snap-align: start; background: var(--arena); padding: .6rem .6rem .8rem; display: flex; flex-direction: column; }
+.tarjeta .foto { background: #fff; aspect-ratio: 4/5; display: grid; place-items: center; overflow: hidden; }
+.tarjeta .foto img { width: 100%; height: 100%; object-fit: contain; }
+.tarjeta .info { padding: .55rem .25rem 0; display: flex; flex-direction: column; flex: 1; }
+.tarjeta h3 { font: 700 .92rem var(--cuerpo); color: var(--vino); margin: 0; }
+.tarjeta .desc { font-size: .7rem; color: #8b7a70; margin: 0 0 .6rem; line-height: 1.3; }
+.tarjeta .etiqueta { font-size: .6rem; letter-spacing: .12em; text-transform: uppercase; color: var(--caramelo); font-weight: 700; }
+.tarjeta .pie { display: flex; justify-content: space-between; align-items: center; margin-top: auto; gap: .4rem; }
+.precio { font-weight: 700; color: var(--vino); font-size: .95rem; }
+.comprar { background: transparent; border: 1.5px solid #fff; color: #fff; border-radius: 99px; padding: .2rem .9rem; font: 600 .7rem var(--cuerpo); cursor: pointer; background: var(--caramelo); transition: .2s; }
+.comprar:hover { background: var(--vino); border-color: var(--vino); }
+.comprar:disabled { opacity: .5; cursor: not-allowed; }
+.stock { font-size: .68rem; color: #8b7a70; }
+.stock.bajo { color: var(--vino-2); font-weight: 700; }
+.oculto { display: none !important; }
+.centro { text-align: center; }
+
+/* ----- sección rosa "Nuevo" ----- */
+.nuevo { background: var(--rosa); padding: 3.5rem 2rem; overflow: hidden; }
+.nuevo .contenedor { display: grid; grid-template-columns: 1.1fr .9fr; gap: 2rem; align-items: center; }
+.nuevo .grande { font-family: var(--titulo); line-height: .85; margin: 0 0 1.5rem; }
+.nuevo .grande .blanco { color: #fff; font-size: clamp(3rem, 8vw, 5.5rem); }
+.nuevo .grande .vino { color: var(--vino); font-size: clamp(3.4rem, 9vw, 6.5rem); display: block; }
+.nuevo .grande .script { font-size: 1.8rem; color: #fff; margin-left: .4rem; }
+.nuevo h3 { font-family: var(--cuerpo); font-weight: 700; font-size: 1.6rem; margin: 0 0 .3rem; }
+.nuevo p.txt { font-size: .82rem; max-width: 40ch; color: var(--vino); }
+.datos { display: flex; gap: 2.5rem; margin-top: 1.6rem; flex-wrap: wrap; }
+.datos div { color: var(--vino-2); font-size: .75rem; line-height: 1.2; }
+.datos b { display: block; font-family: var(--titulo); font-weight: 400; font-size: 1.6rem; color: var(--vino); }
+.nuevo .derecha { position: relative; display: flex; align-items: center; gap: 1rem; }
+.nuevo .derecha img { width: 100%; max-width: 340px; mix-blend-mode: multiply; border-radius: 6px; margin-left: auto; }
+.nuevo .precio-nuevo { position: absolute; left: -10px; top: 40%; text-align: right; }
+.nuevo .precio-nuevo b { font-family: var(--titulo); font-weight: 400; font-size: 2.6rem; color: var(--vino); display: block; line-height: 1; }
+.nuevo .precio-nuevo s { color: var(--vino-2); font-weight: 700; }
+
+/* ----- video y actividades ----- */
+.video-home { display: grid; grid-template-columns: .8fr 1.2fr; gap: 3rem; align-items: center; }
+.video-home video { width: 100%; max-height: 560px; border-radius: 16px; background: #000; box-shadow: 0 20px 50px rgba(78,15,29,.25); }
+.actividades { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.4rem; }
+.actividad { background: var(--arena); padding: 1.2rem; border-radius: 6px; color: var(--vino); transition: .2s; }
+.actividad:hover { background: var(--rosa); transform: translateY(-3px); }
+.actividad .ico { font-size: 1.6rem; }
+.actividad b { display: block; font-size: .95rem; }
+.actividad small { color: #8b7a70; font-size: .72rem; }
+
+/* ----- páginas internas ----- */
+.pagina { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+.pagina > h1 { font-size: 2.6rem; }
+.sub { margin-top: -.4rem; color: #8b7a70; }
+.barra { display: flex; gap: .7rem; flex-wrap: wrap; align-items: center; margin: 1.5rem 0; }
+input, select, textarea { font: inherit; padding: .6rem .9rem; border: 1px solid var(--arena-2); border-radius: 8px; background: #fff; color: var(--texto); }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--rosa); border-color: var(--caramelo); }
+.rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.4rem; }
+.rejilla .tarjeta { min-width: 0; }
+.acciones { display: flex; gap: .4rem; margin-top: .6rem; flex-wrap: wrap; }
+.formulario { background: var(--crema); border-radius: 12px; padding: 2rem; max-width: 620px; border: 1px solid var(--arena); }
+.formulario p { margin: 0 0 1rem; display: flex; flex-direction: column; gap: .3rem; }
+.formulario label { font-weight: 600; font-size: .85rem; color: var(--vino); }
+.formulario input:not([type=checkbox]):not([type=radio]), .formulario select, .formulario textarea { width: 100%; }
+.formulario ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 1rem; flex-wrap: wrap; }
+.formulario ul label { font-weight: 400; display: flex; align-items: center; gap: .3rem; }
+.formulario .helptext { font-size: .72rem; color: #8b7a70; }
+.errorlist { color: var(--vino-2); font-size: .8rem; list-style: none; padding: 0; margin: 0; }
+
+/* ----- panel admin ----- */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0 2rem; }
+.kpi { background: var(--vino); color: var(--rosa); padding: 1.1rem 1.2rem; border-radius: 12px; border-bottom: 4px solid var(--caramelo); }
+.kpi small { letter-spacing: .12em; text-transform: uppercase; font-size: .62rem; opacity: .85; }
+.kpi strong { display: block; font-family: var(--titulo); font-weight: 400; font-size: 1.8rem; color: #fff; }
+.graficas, .dos { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
+.caja { background: var(--crema); border: 1px solid var(--arena); border-radius: 12px; padding: 1.3rem; }
+.caja h3 { font-size: 1.1rem; }
+table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+th, td { text-align: left; padding: .5rem .4rem; border-bottom: 1px solid var(--arena); }
+th { font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: #8b7a70; }
+.mini { width: 44px; height: 44px; object-fit: cover; border-radius: 6px; background: #fff; }
+
+/* ----- mapa, chat, cámara, videos ----- */
+#mapa { height: 430px; border-radius: 12px; border: 4px solid var(--arena); }
+.distancia { font-family: var(--titulo); font-size: 2rem; color: var(--vino); }
+.chat-caja { background: var(--crema); border: 1px solid var(--arena); border-radius: 12px; height: 420px; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: .5rem; }
+.burbuja { max-width: 75%; padding: .5rem .8rem; border-radius: 14px; background: var(--arena); }
+.burbuja.propio { align-self: flex-end; background: var(--caramelo); color: #fff; }
+.burbuja .quien { font-size: .68rem; font-weight: 700; opacity: .8; }
+.burbuja .hora { font-size: .62rem; opacity: .65; margin-left: .4rem; }
+.chat-form { display: flex; gap: .6rem; margin-top: .8rem; }
+.chat-form input { flex: 1; }
+.video-rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.4rem; }
+.video-rejilla iframe { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 10px; background: #000; }
+.video-rejilla video { width: 100%; max-height: 560px; object-fit: contain; border-radius: 10px; background: #000; }
+.camara-zona { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.camara-zona video, .camara-zona canvas { width: 100%; border-radius: 12px; background: var(--noche); aspect-ratio: 4/3; object-fit: cover; }
+.galeria { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .8rem; margin-top: 1rem; }
+.galeria img { border-radius: 10px; aspect-ratio: 4/3; object-fit: cover; width: 100%; }
+
+/* ----- identidad ----- */
+.paleta { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 1rem; }
+.color { border-radius: 12px; overflow: hidden; border: 1px solid var(--arena); }
+.color div { height: 90px; }
+.color p { margin: 0; padding: .5rem .7rem; font-size: .78rem; }
+.muestra { border-bottom: 1px solid var(--arena); padding: 1rem 0; }
+
+/* ----- login / registro (mismo hero) ----- */
+.auth { min-height: 100vh; display: grid; grid-template-columns: 1.15fr .85fr; }
+.auth .hero { height: auto; min-height: 100vh; }
+.auth .hero .producto-hero { height: 62vh; bottom: 90px; }
+.auth .hero h1 { top: 40%; }
+.auth .hero .bienvenida { top: calc(40% + clamp(3rem, 9vw, 7.2rem) - .5rem); }
+.auth-panel { background: var(--crema); display: grid; place-items: center; padding: 2rem; }
+.auth-card { width: 100%; max-width: 370px; }
+.auth-card .logo { width: 64px; margin-bottom: 1rem; }
+.auth-card h2 { font-size: 2.2rem; margin: 0; }
+.auth-card h2 + .script { font-size: 2rem; display: block; margin: -.4rem 0 1rem 1.5rem; }
+.auth-card input:not([type=checkbox]) { width: 100%; margin-bottom: .8rem; }
+.auth-card .boton { width: 100%; padding: .75rem; }
+.auth-card .aparte { margin-top: 1.2rem; font-size: .88rem; text-align: center; }
+.auth-card .pie { margin-top: 1.6rem; font-size: .72rem; color: #8b7a70; text-align: center; }
+.aviso18 { background: var(--rosa); color: var(--vino); border-radius: 8px; padding: .6rem .8rem; font-size: .78rem; margin-bottom: 1rem; }
+.check { display: flex; gap: .5rem; align-items: center; font-size: .82rem; margin: .2rem 0 .9rem; }
+
+footer.pie-sitio { background: var(--vino); color: var(--rosa); text-align: center; padding: 1.6rem; font-size: .82rem; }
+footer.pie-sitio .script { color: #fff; font-size: 1.5rem; display: block; }
+
+@media (max-width: 860px) {
+  .nav { flex-wrap: wrap; padding: .7rem 1rem; }
+  .con-hero .nav { position: relative; background: var(--vino); }
+  .hero { height: 520px; }
+  .hero .producto-hero { height: 330px; }
+  .hero h1 { padding: 0 4%; }
+  .nuevo .contenedor, .video-home, .graficas, .dos, .camara-zona, .auth { grid-template-columns: 1fr; }
+  .auth .hero { min-height: 420px; }
+  .tarjeta { flex-basis: 70%; }
+  .actividades { grid-template-columns: repeat(2, 1fr); }
+  .nuevo .precio-nuevo { position: static; }
+}
+
+/* ajustes finales */
+.auth .hero h1 { font-size: clamp(2.6rem, 6.2vw, 5.4rem); padding: 0 6%; }
+.auth .hero .bienvenida { right: 6%; top: calc(40% + clamp(2.6rem, 6.2vw, 5.4rem) - .3rem); }
+.nuevo .precio-nuevo { position: static; flex: 0 0 auto; }
+.nuevo .derecha img { max-width: 300px; }
+.titulo-script + .sub { margin-top: .8rem; }

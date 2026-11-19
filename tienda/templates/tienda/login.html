@@ -1,0 +1,43 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión · {{ MARCA }}</title>
+  <link rel="icon" href="{% static 'tienda/img/logo.svg' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Pinyon+Script&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'tienda/css/estilo.css' %}">
+</head>
+<body>
+<div class="auth">
+  <!-- mismo hero del diseño de referencia -->
+  <section class="hero">
+    <div class="pedestal"></div>
+    <img class="producto-hero" src="{% static 'tienda/img/hero.jpg' %}" alt="Babydoll negro transparente">
+    <h1><span>SEXY</span><span>SHOP</span></h1>
+    <span class="script bienvenida">Bienvenida</span>
+  </section>
+
+  <section class="auth-panel">
+    <div class="auth-card">
+      <img class="logo" src="{% static 'tienda/img/logo.svg' %}" alt="Logotipo {{ MARCA }}">
+      <h2>{{ MARCA }}</h2>
+      <span class="script">{{ SLOGAN }}</span>
+      <div class="aviso18"><b>+18</b> · Sitio exclusivo para mayores de edad.</div>
+
+      <form method="post">
+        {% csrf_token %}
+        {{ form.username }}
+        {{ form.password }}
+        {% if form.errors %}<p class="errorlist">Usuario o contraseña incorrectos.</p>{% endif %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button class="boton" type="submit">Entrar</button>
+      </form>
+
+      <p class="aparte">¿Eres nueva/o? <a href="{% url 'registro' %}"><b>Crea tu cuenta</b></a></p>
+      <p class="pie">El administrador entra al panel de métricas; los clientes, a la tienda.</p>
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "tienda/base.html" %}
+{% load static %}
+{% block titulo %}Panel de métricas{% endblock %}
+{% block head %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>{% endblock %}
+
+{% block contenido %}
+<main class="pagina">
+  <div class="titulo-script"><h1 style="font-size:2.6rem;margin:0">Métricas</h1><span class="script">panel de administración</span></div>
+  <p class="sub">Métricas generales de {{ TIENDA_NOMBRE }}.</p>
+
+  <div class="kpis">
+    <div class="kpi"><small>Productos</small><strong>{{ total_productos }}</strong></div>
+    <div class="kpi"><small>Prendas en stock</small><strong>{{ stock_total }}</strong></div>
+    <div class="kpi"><small>Valor del inventario</small><strong>${{ valor_inventario|floatformat:0 }}</strong></div>
+    <div class="kpi"><small>Clientes</small><strong>{{ total_clientes }}</strong></div>
+    <div class="kpi"><small>Mensajes en el chat</small><strong>{{ total_mensajes }}</strong></div>
+    <div class="kpi"><small>Fotos tomadas</small><strong>{{ total_fotos }}</strong></div>
+    <div class="kpi"><small>Compras</small><strong>{{ total_compras }}</strong></div>
+    <div class="kpi"><small>Total vendido</small><strong>${{ total_vendido|floatformat:0 }}</strong></div>
+    <div class="kpi"><small>Encuestas</small><strong>{{ total_encuestas }}</strong></div>
+    <div class="kpi"><small>Satisfacción promedio</small><strong>{% if promedio_satisfaccion %}{{ promedio_satisfaccion|floatformat:1 }}/5{% else %}—{% endif %}</strong></div>
+  </div>
+
+  <div class="graficas">
+    <div class="caja"><h3>Productos por categoría</h3><canvas id="gCategorias"></canvas></div>
+    <div class="caja"><h3>Satisfacción (encuesta)</h3><canvas id="gSatisfaccion"></canvas></div>
+  </div>
+
+  <div class="dos">
+    <div class="caja">
+      <h3>Stock bajo (5 o menos)</h3>
+      <table>
+        <tr><th>Producto</th><th>Stock</th><th></th></tr>
+        {% for p in bajo_stock %}
+          <tr><td>{{ p.nombre }}</td><td>{{ p.stock }}</td><td><a href="{% url 'producto_editar' p.pk %}">Editar</a></td></tr>
+        {% empty %}<tr><td colspan="3">Todo el inventario está bien surtido.</td></tr>{% endfor %}
+      </table>
+    </div>
+    <div class="caja">
+      <h3>Últimas ubicaciones de clientes</h3>
+      <table>
+        <tr><th>Cliente</th><th>Distancia</th><th>Fecha</th></tr>
+        {% for u in ultimas_ubicaciones %}
+          <tr><td>{{ u.usuario.first_name|default:u.usuario.username }}</td><td>{{ u.distancia_km }} km</td><td>{{ u.fecha|date:"d/m H:i" }}</td></tr>
+        {% empty %}<tr><td colspan="3">Nadie ha capturado su ubicación todavía.</td></tr>{% endfor %}
+      </table>
+      {% if distancia_promedio %}<p class="sub">Distancia promedio a la tienda: <b>{{ distancia_promedio|floatformat:1 }} km</b></p>{% endif %}
+    </div>
+  </div>
+  <div class="dos">
+    <div class="caja">
+      <h3>Más vendidos</h3>
+      <table>
+        <tr><th>Producto</th><th>Piezas</th><th>Total</th></tr>
+        {% for v in mas_vendidos %}
+          <tr><td>{{ v.producto__nombre }}</td><td>{{ v.n }}</td><td>${{ v.t|floatformat:0 }}</td></tr>
+        {% empty %}<tr><td colspan="3">Aún no hay ventas.</td></tr>{% endfor %}
+      </table>
+    </div>
+    <div class="caja">
+      <h3>Últimas compras</h3>
+      <table>
+        <tr><th>Cliente</th><th>Producto</th><th>Fecha</th></tr>
+        {% for c in ultimas_compras %}
+          <tr><td>{{ c.usuario.first_name|default:c.usuario.username }}</td><td>{{ c.producto.nombre }}</td><td>{{ c.fecha|date:"d/m H:i" }}</td></tr>
+        {% empty %}<tr><td colspan="3">Aún no hay compras.</td></tr>{% endfor %}
+      </table>
+    </div>
+  </div>
+  <p style="margin-top:1.5rem"><a class="boton" href="{% url 'producto_crear' %}">+ Nuevo producto</a>
+  <a class="boton claro" href="{% url 'catalogo' %}">Administrar productos</a></p>
+</main>
+{{ datos_categorias|json_script:"datos-categorias" }}
+{{ datos_satisfaccion|json_script:"datos-satisfaccion" }}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const cat = JSON.parse(document.getElementById('datos-categorias').textContent);
+  const sat = JSON.parse(document.getElementById('datos-satisfaccion').textContent);
+  new Chart(document.getElementById('gCategorias'), {
+    type: 'bar',
+    data: { labels: cat.labels, datasets: [{ data: cat.values, backgroundColor: '#b97a64', borderRadius: 6 }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+  new Chart(document.getElementById('gSatisfaccion'), {
+    type: 'doughnut',
+    data: { labels: sat.labels.map(l => l + ' ★'), datasets: [{ data: sat.values,
+      backgroundColor: ['#4e0f1d', '#7a1f2e', '#b97a64', '#e9b4b4', '#f6c6c6'] }] }
+  });
+</script>
+{% endblock %}

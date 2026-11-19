@@ -1,0 +1,136 @@
+{% extends "tienda/base.html" %}
+{% load static %}
+{% block titulo %}Inicio{% endblock %}
+{% block clase_body %}con-hero{% endblock %}
+
+{% block contenido %}
+<!-- HERO: misma composición que "ORDER COFFEE / Welcome" -->
+<section class="hero">
+  <div class="pedestal"></div>
+  <img class="producto-hero" src="{% static 'tienda/img/hero.jpg' %}" alt="Babydoll negro transparente con flores">
+  <h1><span>SEXY</span><span>SHOP</span></h1>
+  <span class="script bienvenida">Bienvenida</span>
+  <p class="slogan-hero">Hola, {{ user.first_name|default:user.username }}. {{ SLOGAN }} <span class="edad">+18</span></p>
+</section>
+
+<!-- MENÚ / colección (como "Menu drinks") -->
+<section class="seccion" id="coleccion">
+  <div class="contenedor">
+    <div class="encabezado">
+      <div class="titulo-script"><h2>Menú</h2><span class="script">colección</span></div>
+      <a class="boton" href="{% url 'mis_compras' %}">mis compras</a>
+    </div>
+
+    <div class="pildoras">
+      <button class="pildora activa" data-filtro="">Todo</button>
+      {% for clave, nombre in categorias %}
+        <button class="pildora" data-filtro="{{ clave }}">{{ nombre }}</button>
+      {% endfor %}
+    </div>
+
+    <div class="carrusel">
+      <button class="flecha" data-fila="fila1" data-dir="-1" aria-label="Anterior">‹</button>
+      <div class="fila" id="fila1">
+        {% for p in fila1 %}{% include "tienda/_tarjeta.html" %}{% endfor %}
+      </div>
+      <button class="flecha" data-fila="fila1" data-dir="1" aria-label="Siguiente">›</button>
+    </div>
+
+    {% if fila2 %}
+    <div class="carrusel">
+      <button class="flecha" data-fila="fila2" data-dir="-1" aria-label="Anterior">‹</button>
+      <div class="fila" id="fila2">
+        {% for p in fila2 %}{% include "tienda/_tarjeta.html" %}{% endfor %}
+      </div>
+      <button class="flecha" data-fila="fila2" data-dir="1" aria-label="Siguiente">›</button>
+    </div>
+    {% endif %}
+
+    <p class="centro"><a class="boton" href="{% url 'catalogo' %}">Ver más</a></p>
+  </div>
+</section>
+
+<!-- NUEVO (como la sección rosa "New drink") -->
+{% if nuevo %}
+<section class="nuevo">
+  <div class="contenedor">
+    <div>
+      <p class="grande"><span class="blanco">Nuevo</span><span class="script">lanzamiento</span><span class="vino">look</span></p>
+      <h3>{{ nuevo.nombre }}</h3>
+      <p class="txt">{{ nuevo.descripcion|capfirst }}. Una pieza delicada y atrevida para sentirte segura y
+        irresistible; tela suave, ajuste cómodo y detalles que enamoran. Perfecta para regalar o regalarte.</p>
+      <form method="post" action="{% url 'comprar' nuevo.pk %}">
+        {% csrf_token %}<input type="hidden" name="siguiente" value="{{ request.get_full_path }}">
+        <button class="boton vino" type="submit" {% if nuevo.stock == 0 %}disabled{% endif %}>🛒 Comprar ahora</button>
+      </form>
+      <div class="datos">
+        <div><b>3</b>tallas<br>CH, M, G</div>
+        <div><b>Con</b>choker de<br>perlas incluido</div>
+        {% if nuevo.descuento %}<div><b>{{ nuevo.descuento }}%</b>de descuento</div>{% endif %}
+      </div>
+    </div>
+    <div class="derecha">
+      <div class="precio-nuevo">
+        <b>${{ nuevo.precio|floatformat:0 }}</b>
+        {% if nuevo.precio_anterior %}<s>${{ nuevo.precio_anterior|floatformat:0 }}</s>{% endif %}
+      </div>
+      <img src="{% if nuevo.imagen %}{{ nuevo.imagen.url }}{% else %}{% static 'tienda/img/nuevo.jpg' %}{% endif %}" alt="{{ nuevo.nombre }}">
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- VIDEO + actividades -->
+<section class="seccion">
+  <div class="contenedor video-home">
+    <div>
+      {% if video %}
+        {% if video.youtube_id %}
+          <iframe src="https://www.youtube.com/embed/{{ video.youtube_id }}" title="{{ video.titulo }}" allowfullscreen style="width:100%;aspect-ratio:9/16;border:0;border-radius:16px"></iframe>
+        {% elif video.archivo %}
+          <video src="{{ video.archivo.url }}" controls muted playsinline loop></video>
+        {% endif %}
+      {% endif %}
+    </div>
+    <div>
+      <div class="titulo-script"><h2>Pruébatelo</h2><span class="script">en video</span></div>
+      <p>Mira cómo se ven nuestras prendas puestas y elige tu favorita. ¿Dudas con tu talla? Escríbenos en el blog.</p>
+      <div class="actividades">
+        <a class="actividad" href="{% url 'mapa' %}"><span class="ico">📍</span><b>Ubicación</b><small>¿Qué tan cerca estás?</small></a>
+        <a class="actividad" href="{% url 'chat' %}"><span class="ico">💬</span><b>Blog</b><small>Chatea con la comunidad</small></a>
+        <a class="actividad" href="{% url 'videos' %}"><span class="ico">🎬</span><b>Videos</b><small>Try-on y novedades</small></a>
+        <a class="actividad" href="{% url 'encuesta' %}"><span class="ico">⭐</span><b>Encuesta</b><small>Cuéntanos tu opinión</small></a>
+        <a class="actividad" href="{% url 'camara' %}"><span class="ico">📸</span><b>Fotos</b><small>Tómate una foto</small></a>
+        <a class="actividad" href="{% url 'identidad' %}"><span class="ico">💋</span><b>Identidad</b><small>Nuestra marca</small></a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Flechas del carrusel
+  document.querySelectorAll('.flecha').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const fila = document.getElementById(btn.dataset.fila);
+      fila.scrollBy({ left: fila.clientWidth * Number(btn.dataset.dir), behavior: 'smooth' });
+    });
+  });
+  // Píldoras de categoría (filtran las dos filas)
+  document.querySelectorAll('.pildora').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.pildora').forEach(x => x.classList.remove('activa'));
+      p.classList.add('activa');
+      const f = p.dataset.filtro;
+      document.querySelectorAll('.fila .tarjeta').forEach(t => {
+        t.classList.toggle('oculto', f !== '' && t.dataset.cat !== f);
+      });
+      document.querySelectorAll('.carrusel').forEach(c => {
+        const visibles = c.querySelectorAll('.tarjeta:not(.oculto)').length;
+        c.classList.toggle('oculto', visibles === 0);
+      });
+    });
+  });
+</script>
+{% endblock %}

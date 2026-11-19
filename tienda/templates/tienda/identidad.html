@@ -1,0 +1,54 @@
+{% extends "tienda/base.html" %}
+{% load static %}
+{% block titulo %}Identidad{% endblock %}
+
+{% block contenido %}
+<main class="pagina">
+  <div class="titulo-script">
+    <h1 style="font-size:2.6rem;margin:0">Identidad</h1>
+    <span class="script">de la marca</span>
+  </div>
+
+  <div class="dos" style="margin-top:2rem">
+    <div class="caja">
+      <h3>Logotipo / imagotipo</h3>
+      <div style="display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap">
+        <img src="{% static 'tienda/img/logo.svg' %}" alt="Imagotipo {{ MARCA }}" style="width:110px">
+        <div>
+          <span style="font-family:var(--titulo);font-size:2.6rem;color:var(--vino)">{{ MARCA }}</span><br>
+          <span class="script" style="font-size:1.6rem">sexy shop</span>
+        </div>
+      </div>
+      <p class="sub" style="margin-top:1rem">Imagotipo: unos labios (símbolo de deseo y seguridad) dentro de un círculo vino
+        con un aro punteado rosa. Junto al nombre forma el logotipo completo.</p>
+    </div>
+    <div class="caja">
+      <h3>Slogan</h3>
+      <p class="script" style="font-size:2.6rem;margin:.3rem 0">{{ SLOGAN }}</p>
+      <p class="sub">Invita a la clienta y al cliente a sentirse seguros, libres y a disfrutar sin pena.</p>
+    </div>
+  </div>
+
+  <div class="caja" style="margin-bottom:1.2rem">
+    <h3>Paleta de colores</h3>
+    <div class="paleta">
+      <div class="color"><div style="background:#4e0f1d"></div><p><b>Vino</b><br>#4E0F1D</p></div>
+      <div class="color"><div style="background:#7a1f2e"></div><p><b>Vino claro</b><br>#7A1F2E</p></div>
+      <div class="color"><div style="background:#b97a64"></div><p><b>Caramelo</b><br>#B97A64</p></div>
+      <div class="color"><div style="background:#f6c6c6"></div><p><b>Rosa empolvado</b><br>#F6C6C6</p></div>
+      <div class="color"><div style="background:#e9ddcf"></div><p><b>Arena</b><br>#E9DDCF</p></div>
+      <div class="color"><div style="background:#faf5ef"></div><p><b>Crema</b><br>#FAF5EF</p></div>
+    </div>
+  </div>
+
+  <div class="caja">
+    <h3>Tipos de letra</h3>
+    <div class="muestra"><small class="sub">Títulos — Archivo Black</small>
+      <div style="font-family:var(--titulo);font-size:2.4rem;color:var(--vino)">SEXY SHOP</div></div>
+    <div class="muestra"><small class="sub">Acentos — Pinyon Script</small>
+      <div class="script" style="font-size:2.6rem">Bienvenida</div></div>
+    <div class="muestra" style="border:0"><small class="sub">Texto — Poppins</small>
+      <div style="font-size:1.1rem">Lencería, babydolls, conjuntos y regalos divertidos con envío discreto.</div></div>
+  </div>
+</main>
+{% endblock %}

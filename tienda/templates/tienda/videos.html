@@ -1,0 +1,38 @@
+{% extends "tienda/base.html" %}
+{% block titulo %}Videos{% endblock %}
+
+{% block contenido %}
+<main class="pagina">
+  <h1>Videos</h1>
+  <p class="sub">Try-on hauls, novedades y looks de la temporada.</p>
+
+  {% if form %}
+    <form class="formulario" method="post" enctype="multipart/form-data" style="margin-bottom:2rem">
+      {% csrf_token %}
+      <h3>Agregar video (admin)</h3>
+      {{ form.as_p }}
+      <button class="boton" type="submit">Agregar</button>
+    </form>
+  {% endif %}
+
+  <div class="video-rejilla">
+    {% for v in videos %}
+      <div class="caja">
+        {% if v.youtube_id %}
+          <iframe src="https://www.youtube.com/embed/{{ v.youtube_id }}" title="{{ v.titulo }}" allowfullscreen></iframe>
+        {% elif v.archivo %}
+          <video src="{{ v.archivo.url }}" controls></video>
+        {% endif %}
+        <h3 style="margin-top:.8rem;font-size:1.1rem">{{ v.titulo }}</h3>
+        {% if user.is_staff %}
+          <form method="post" action="{% url 'video_eliminar' v.pk %}">{% csrf_token %}
+            <button class="boton chico peligro" type="submit">Eliminar</button>
+          </form>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p>Todavía no hay videos publicados.</p>
+    {% endfor %}
+  </div>
+</main>
+{% endblock %}

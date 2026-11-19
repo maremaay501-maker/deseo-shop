@@ -1,0 +1,43 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crear cuenta · {{ MARCA }}</title>
+  <link rel="icon" href="{% static 'tienda/img/logo.svg' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Pinyon+Script&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'tienda/css/estilo.css' %}">
+</head>
+<body>
+<div class="auth">
+  <section class="hero">
+    <div class="pedestal"></div>
+    <img class="producto-hero" src="{% static 'tienda/img/hero.jpg' %}" alt="Babydoll negro transparente">
+    <h1><span>SEXY</span><span>SHOP</span></h1>
+    <span class="script bienvenida">Únete</span>
+  </section>
+
+  <section class="auth-panel">
+    <div class="auth-card">
+      <img class="logo" src="{% static 'tienda/img/logo.svg' %}" alt="Logotipo {{ MARCA }}">
+      <h2>Crea tu cuenta</h2>
+      <span class="script">{{ SLOGAN }}</span>
+      <form method="post">
+        {% csrf_token %}
+        {% for campo in form %}
+          {% if campo.name == "mayor_edad" %}
+            <label class="check">{{ campo }} {{ campo.label }}</label>
+          {% else %}
+            <label style="font-size:.8rem;font-weight:600;color:var(--vino)">{{ campo.label }}</label>
+            {{ campo }}
+          {% endif %}
+          {{ campo.errors }}
+        {% endfor %}
+        <button class="boton" type="submit">Registrarme</button>
+      </form>
+      <p class="aparte">¿Ya tienes cuenta? <a href="{% url 'login' %}"><b>Inicia sesión</b></a></p>
+    </div>
+  </section>
+</div>
+</body>
+</html>
